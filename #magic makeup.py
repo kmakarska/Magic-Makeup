@@ -1,2 +1,3 @@
-#magic makeup
-print("hello world")
+from cmu_graphics import *
+#this works!!!!
+cmu_graphics.run()
