@@ -10,88 +10,162 @@ def onAppStart(app):
     colorInit(app)
     openingImages(app)  
     resizeFaceImages(app)
+    resizeOtherImages(app)
     convertImgType(app)
 
 def init(app):
-    app.prevMousePositions = []
+    app.prevMousePositionsE = []
+    app.prevMousePositionsL = []
     app.eyelinerPressed = False
+    app.lipstickPressed = False
     app.eyelinerColor = 'black'
+    app.lipstickColor = 'pink'
 
 def colorInit(app):
+    #eyeliner
     app.blackE = False
     app.brownE = False
     app.pinkE = False
     app.purpleE = False
     app.greenE = False
     app.blueE = False
+    #lipstick
+    app.hotPinkL = False
+    app.crimsonL = False
+    app.deepPinkL = False
+    app.darkRedL = False
+    app.magentaL = False
+    app.darkMagentaL = False
 
 def openingImages(app):
     app.defaultFace = Image.open('images/defaultFace.png')
     app.eyeliner = Image.open('images/eyeliner.png')
     app.eyelinerFace = Image.open('images/eyelinerFace.jpg')
+    app.lipstick = Image.open('images/lipstick.png')
+    app.lipstickFace = Image.open('images/lipstickFace.jpg')
 
 def resizeFaceImages(app):
     newsize = (700, 700)
     app.defaultFace = app.defaultFace.resize(newsize)
     app.eyelinerFace = app.eyelinerFace.resize(newsize)
+    app.lipstickFace = app.lipstickFace.resize(newsize)
+
+def resizeOtherImages(app):
+    newsize2 = (200, 200)
+    app.lipstick = app.lipstick.resize(newsize2)
 
 def convertImgType(app):
     app.defaultFace = CMUImage(app.defaultFace)
     app.eyeliner = CMUImage(app.eyeliner)
     app.eyelinerFace = CMUImage(app.eyelinerFace)
+    app.lipstick = CMUImage(app.lipstick)
+    app.lipstickFace = CMUImage(app.lipstickFace)
 
 def redrawAll(app):
     drawImage(app.defaultFace, 400, -5)
     drawRect(0, 680, 2000, 300, fill='violet')
     eyelinerPressed(app)
+    lipstickPressed(app)
+    drawProducts(app)
+
+def drawProducts(app):
+    drawImage(app.eyeliner, 650, 700)
+    drawImage(app.lipstick, 1050, 710)
     
 def eyelinerPressed(app):
     if (app.eyelinerPressed):
         drawImage(app.eyelinerFace, 400, 0)
         drawRect(0, 680, 2000, 300, fill='violet')
+        drawImage(app.eyeliner, 650, 700)
         drawRect(650, 700, 230, 200, fill=None, border='black')
         eyelinerColors(app)
-    drawImage(app.eyeliner, 650, 700)
-    for pos in app.prevMousePositions:
+    
+    for pos in app.prevMousePositionsE:
         drawCircle(pos[0], pos[1], 3, fill=app.eyelinerColor)
 
+def lipstickPressed(app):
+    if (app.lipstickPressed):
+        drawImage(app.lipstickFace, 400, 0)
+        drawRect(0, 680, 2000, 300, fill='violet')
+        drawRect(1025, 700, 230, 200, fill=None, border='black')
+        lipstickColors(app)
+        drawImage(app.lipstick, 1050, 710)
+    for pos in app.prevMousePositionsL:
+        drawCircle(pos[0], pos[1], 3, fill=app.lipstickColor)
+        
 def eyelinerColors(app):
-    drawLabel("Colors", 1300, 80, size=30)
-    #black
-    drawRect(1225, 120, 70, 70, fill='black')
-    if app.blackE:
-        drawRect(1220, 115, 80, 80, fill=None, border='yellow', borderWidth=5)
-    #brown
-    drawRect(1310, 120, 70, 70, fill='saddleBrown')
-    if app.brownE:
-        drawRect(1305, 115, 80, 80, fill=None, border='yellow', borderWidth=5)
-    #pink
-    drawRect(1225, 200, 70, 70, fill='deepPink')
-    if app.pinkE:
-        drawRect(1220, 195, 80, 80, fill=None, border='yellow', borderWidth=5)
-    #purple
-    drawRect(1310, 200, 70, 70, fill='darkViolet')
-    if app.purpleE:
-        drawRect(1305, 195, 80, 80, fill=None, border='yellow', borderWidth=5)
-    #green
-    drawRect(1225, 280, 70, 70, fill='limeGreen')
-    if app.greenE:
-        drawRect(1220, 275, 80, 80, fill=None, border='yellow', borderWidth=5)
-    #blue
-    drawRect(1310, 280, 70, 70, fill='royalBlue')
-    if app.blueE:
-        drawRect(1305, 275, 80, 80, fill=None, border='yellow', borderWidth=5)
+    if(app.eyelinerPressed):
+        drawLabel("Colors", 1300, 80, size=30)
+        #black
+        drawRect(1225, 120, 70, 70, fill='black')
+        if app.blackE:
+            drawRect(1220, 115, 80, 80, fill=None, border='yellow', borderWidth=5)
+        #brown
+        drawRect(1310, 120, 70, 70, fill='saddleBrown')
+        if app.brownE:
+            drawRect(1305, 115, 80, 80, fill=None, border='yellow', borderWidth=5)
+        #pink
+        drawRect(1225, 200, 70, 70, fill='deepPink')
+        if app.pinkE:
+            drawRect(1220, 195, 80, 80, fill=None, border='yellow', borderWidth=5)
+        #purple
+        drawRect(1310, 200, 70, 70, fill='darkViolet')
+        if app.purpleE:
+            drawRect(1305, 195, 80, 80, fill=None, border='yellow', borderWidth=5)
+        #green
+        drawRect(1225, 280, 70, 70, fill='limeGreen')
+        if app.greenE:
+            drawRect(1220, 275, 80, 80, fill=None, border='yellow', borderWidth=5)
+        #blue
+        drawRect(1310, 280, 70, 70, fill='royalBlue')
+        if app.blueE:
+            drawRect(1305, 275, 80, 80, fill=None, border='yellow', borderWidth=5)
 
+def lipstickColors(app):
+    if app.lipstickPressed:
+        drawLabel("Colors", 1300, 80, size=30)
+        #hot pink
+        drawRect(1225, 120, 70, 70, fill='hotPink')
+        if app.hotPinkL:
+            drawRect(1220, 115, 80, 80, fill=None, border='yellow', borderWidth=5)
+        #crimson
+        drawRect(1310, 120, 70, 70, fill='crimson')
+        if app.crimsonL:
+            drawRect(1305, 115, 80, 80, fill=None, border='yellow', borderWidth=5)
+        #deepPink
+        drawRect(1225, 200, 70, 70, fill='deepPink')
+        if app.deepPinkL:
+            drawRect(1220, 195, 80, 80, fill=None, border='yellow', borderWidth=5)
+        #darkRed
+        drawRect(1310, 200, 70, 70, fill='darkRed')
+        if app.darkRedL:
+            drawRect(1305, 195, 80, 80, fill=None, border='yellow', borderWidth=5)
+        #magenta
+        drawRect(1225, 280, 70, 70, fill='magenta')
+        if app.magentaL:
+            drawRect(1220, 275, 80, 80, fill=None, border='yellow', borderWidth=5)
+        #darkMagenta
+        drawRect(1310, 280, 70, 70, fill='darkMagenta')
+        if app.darkMagentaL:
+            drawRect(1305, 275, 80, 80, fill=None, border='yellow', borderWidth=5)
 
       
 def onMouseDrag(app, mouseX, mouseY):
-    app.prevMousePositions.append((mouseX, mouseY))
+    if app.eyelinerPressed:
+        app.prevMousePositionsE.append((mouseX, mouseY))
+    if app.lipstickPressed:
+        app.prevMousePositionsL.append((mouseX, mouseY))
 
 def onMousePress(app, mouseX, mouseY):
+    eyelinerOnMousePress(app, mouseX, mouseY)
+    lipstickOnMousePress(app, mouseX, mouseY)
+   
+def eyelinerOnMousePress(app, mouseX, mouseY):
     #eyeliner pressed
     if (mouseX >= 650 and mouseX <= 850 and mouseY >= 700 and mouseY <= 900):
         app.eyelinerPressed = True
-    #black pressed
+        app.lipstickPressed = False
+    #blackE pressed
     if (mouseX > 1225 and mouseX < 1295 and mouseY > 120 and mouseY < 190):
         app.blackE = True
         app.brownE = False
@@ -100,7 +174,7 @@ def onMousePress(app, mouseX, mouseY):
         app.greenE = False
         app.blueE = False
         app.eyelinerColor = 'black'
-    #brown pressed
+    #brownE pressed
     if (mouseX > 1310 and mouseX < 1380 and mouseY > 120 and mouseY < 190):
         app.brownE = True
         app.blackE = False
@@ -109,7 +183,7 @@ def onMousePress(app, mouseX, mouseY):
         app.greenE = False
         app.blueE = False
         app.eyelinerColor = 'saddleBrown'
-    #pink pressed
+    #pinkE pressed
     if (mouseX > 1225 and mouseX < 1295 and mouseY > 200 and mouseY < 270):
         app.pinkE = True
         app.brownE = False
@@ -118,7 +192,7 @@ def onMousePress(app, mouseX, mouseY):
         app.greenE = False
         app.blueE = False
         app.eyelinerColor = 'deepPink'
-    #purple pressed
+    #purpleE pressed
     if (mouseX > 1310 and mouseX < 1380 and mouseY > 200 and mouseY < 270):
         app.purpleE = True
         app.pinkE = False
@@ -127,7 +201,7 @@ def onMousePress(app, mouseX, mouseY):
         app.greenE = False
         app.blueE = False
         app.eyelinerColor = 'darkViolet'
-    #green pressed
+    #greenE pressed
     if (mouseX > 1225 and mouseX < 1295 and mouseY > 280 and mouseY < 350):
         app.greenE = True
         app.pinkE = False
@@ -136,7 +210,7 @@ def onMousePress(app, mouseX, mouseY):
         app.purpleE = False
         app.blueE = False
         app.eyelinerColor = 'limeGreen'
-    #blue pressed
+    #blueE pressed
     if (mouseX > 1310 and mouseX < 1380 and mouseY > 280 and mouseY < 350):
         app.blueE = True
         app.greenE = False
@@ -145,6 +219,68 @@ def onMousePress(app, mouseX, mouseY):
         app.blackE = False
         app.purpleE = False
         app.eyelinerColor = 'royalBlue'
+
+def lipstickOnMousePress(app, mouseX, mouseY):
+    #lipstick pressed
+    if (mouseX >= 1050 and mouseX <= 1250 and mouseY >= 700 and mouseY <= 900):
+        app.lipstickPressed = True
+        app.eyelinerPressed = False
+    #hotPinkL pressed
+    if (mouseX > 1225 and mouseX < 1295 and mouseY > 120 and mouseY < 190):
+        app.hotPinkL = True
+        app.crimsonL = False
+        app.deepPinkL = False
+        app.darkRed = False
+        app.magentaL = False
+        app.darkMagentaL = False
+        app.lipstickColor = 'hotPink'
+    #crimsonL pressed
+    if (mouseX > 1310 and mouseX < 1380 and mouseY > 120 and mouseY < 190):
+        app.crimsonL = True
+        app.hotPinkL = False
+        app.deepPinkL = False
+        app.darkRed = False
+        app.magentaL = False
+        app.darkMagentaL = False
+        app.lipstickColor = 'crimson'
+    #deepPinkL pressed
+    if (mouseX > 1225 and mouseX < 1295 and mouseY > 200 and mouseY < 270):
+        app.deepPinkL = True
+        app.crimsonL = False
+        app.hotPinkL = False 
+        app.darkRed = False       
+        app.magentaL = False
+        app.darkMagentaL = False
+        app.lipstickColor = 'deepPink'
+    #darkRedL pressed
+    if (mouseX > 1310 and mouseX < 1380 and mouseY > 200 and mouseY < 270):
+        app.darkRed = True
+        app.deepPinkL = False
+        app.crimsonL = False
+        app.hotPinkL = False  
+        app.magentaL = False
+        app.darkMagentaL = False
+        app.lipstickColor = 'darkRed'
+    #magentaL pressed
+    if (mouseX > 1225 and mouseX < 1295 and mouseY > 280 and mouseY < 350):
+        app.magentaL = True
+        app.darkRed = False
+        app.deepPinkL = False
+        app.crimsonL = False
+        app.hotPinkL = False  
+        app.darkMagentaL = False
+        app.lipstickColor = 'magenta'
+    #darkMagentaL pressed
+    if (mouseX > 1310 and mouseX < 1380 and mouseY > 280 and mouseY < 350):
+        app.darkMagentaL = True
+        app.magentaL = False
+        app.darkRed = False
+        app.deepPinkL = False
+        app.crimsonL = False
+        app.hotPinkL = False  
+        app.lipstickColor = 'darkMagenta'
+
+
 
 def main():
     runApp(width=2000, height=1000)
