@@ -5,8 +5,7 @@ import os, pathlib
 def openImage(fileName):
     return Image.open(os.path.join(pathlib.Path(__file__).parent,fileName))
 
-def onAppStart(app):
-    app.prevMousePositions = []   
+def onAppStart(app):  
     app.fairyImg = Image.open('images/fairy.png')
     app.bgImg = Image.open('images/bg.png')
     #changing size of image
