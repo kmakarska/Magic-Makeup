@@ -280,8 +280,6 @@ def lipstickOnMousePress(app, mouseX, mouseY):
         app.hotPinkL = False  
         app.lipstickColor = 'darkMagenta'
 
-
-
 def main():
     runApp(width=2000, height=1000)
 
