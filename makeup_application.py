@@ -70,6 +70,8 @@ def redrawAll(app):
     drawImage(app.fairyImg, 70, 100)
     drawImage(app.defaultFace, 400, -5)
     drawRect(0, 680, 2000, 300, fill='violet')
+    drawRect(1200, 550, 200, 100, fill='hotPink', border='mediumVioletRed') 
+    drawLabel("Done", 1300, 600, size=50, fill='mediumVioletRed')
     eyelinerPressed(app)
     lipstickPressed(app)
     drawProducts(app)
