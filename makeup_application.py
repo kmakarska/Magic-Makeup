@@ -43,6 +43,8 @@ def openingImages(app):
     app.eyelinerFace = Image.open('images/eyelinerFace.jpg')
     app.lipstick = Image.open('images/lipstick.png')
     app.lipstickFace = Image.open('images/lipstickFace.jpg')
+    app.bgImg = Image.open('images/bg.png')
+    app.fairyImg = Image.open('images/fairy.png')
 
 def resizeFaceImages(app):
     newsize = (700, 700)
@@ -55,13 +57,17 @@ def resizeOtherImages(app):
     app.lipstick = app.lipstick.resize(newsize2)
 
 def convertImgType(app):
+    app.bgImg = CMUImage(app.bgImg)
     app.defaultFace = CMUImage(app.defaultFace)
     app.eyeliner = CMUImage(app.eyeliner)
     app.eyelinerFace = CMUImage(app.eyelinerFace)
     app.lipstick = CMUImage(app.lipstick)
     app.lipstickFace = CMUImage(app.lipstickFace)
-
+    app.fairyImg = CMUImage(app.fairyImg)
+    
 def redrawAll(app):
+    drawImage(app.bgImg, 0, 0)
+    drawImage(app.fairyImg, 70, 100)
     drawImage(app.defaultFace, 400, -5)
     drawRect(0, 680, 2000, 300, fill='violet')
     eyelinerPressed(app)
@@ -76,6 +82,12 @@ def eyelinerPressed(app):
     if (app.eyelinerPressed):
         drawImage(app.eyelinerFace, 400, 0)
         drawRect(0, 680, 2000, 300, fill='violet')
+        #pixie hints
+        drawOval(550, 125, 400, 200, fill='lavenderBlush')
+        drawRegularPolygon(360, 150, 25, 3, fill='lavenderBlush')
+        drawLabel("Place eyeliner on", 550, 80, size=30, fill='mediumVioletRed')
+        drawLabel("the upper lash line to", 550, 120, size=30, fill='mediumVioletRed')
+        drawLabel("accentuate the eyes!", 550, 160, size=30, fill='mediumVioletRed')
         drawImage(app.eyeliner, 650, 700)
         drawRect(650, 700, 230, 200, fill=None, border='black')
         eyelinerColors(app)
@@ -89,6 +101,11 @@ def lipstickPressed(app):
         drawRect(0, 680, 2000, 300, fill='violet')
         drawRect(1025, 700, 230, 200, fill=None, border='black')
         lipstickColors(app)
+        drawOval(550, 125, 400, 200, fill='lavenderBlush')
+        drawRegularPolygon(360, 150, 25, 3, fill='lavenderBlush')
+        drawLabel("Place lipstick on", 550, 80, size=30, fill='mediumVioletRed')
+        drawLabel("lips to brighten", 550, 120, size=30, fill='mediumVioletRed')
+        drawLabel("the smile!", 550, 160, size=30, fill='mediumVioletRed')
         drawImage(app.lipstick, 1050, 710)
     for pos in app.prevMousePositionsL:
         drawCircle(pos[0], pos[1], 3, fill=app.lipstickColor)
