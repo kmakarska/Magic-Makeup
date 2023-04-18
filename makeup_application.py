@@ -93,10 +93,8 @@ def eyelinerPressed(app):
         drawImage(app.eyeliner, 650, 700)
         drawRect(650, 700, 230, 200, fill=None, border='black')
         eyelinerColors(app)
+    print("eyeliner entered")
     
-    for pos in app.prevMousePositionsE:
-        drawCircle(pos[0], pos[1], 3, fill=app.eyelinerColor)
-
 def lipstickPressed(app):
     if (app.lipstickPressed):
         drawImage(app.lipstickFace, 400, 0)
@@ -109,8 +107,14 @@ def lipstickPressed(app):
         drawLabel("lips to brighten", 550, 120, size=30, fill='mediumVioletRed')
         drawLabel("the smile!", 550, 160, size=30, fill='mediumVioletRed')
         drawImage(app.lipstick, 1050, 710)
+    print("lipstick entered")
     for pos in app.prevMousePositionsL:
         drawCircle(pos[0], pos[1], 3, fill=app.lipstickColor)
+    print(len(app.prevMousePositionsL))
+    for pos in app.prevMousePositionsE:
+        drawCircle(pos[0], pos[1], 3, fill=app.eyelinerColor)
+    print(len(app.prevMousePositionsE))
+
         
 def eyelinerColors(app):
     if(app.eyelinerPressed):
@@ -172,7 +176,7 @@ def lipstickColors(app):
 def onMouseDrag(app, mouseX, mouseY):
     if app.eyelinerPressed:
         app.prevMousePositionsE.append((mouseX, mouseY))
-    if app.lipstickPressed:
+    elif app.lipstickPressed:
         app.prevMousePositionsL.append((mouseX, mouseY))
 
 def onMousePress(app, mouseX, mouseY):
