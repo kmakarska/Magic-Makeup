@@ -38,12 +38,17 @@ def colorInit(app):
     app.darkMagentaL = False
 
 def openingImages(app):
+    #default face (and other faces) found on https://barbie-makeup.goldhairgames.com/barbie-makeup/1382-barbie-loves-capybaras
     app.defaultFace = Image.open('images/defaultFace.png')
+    #eyeliner icon found on https://pngtree.com/free-png-vectors/eyeliner-clipart
     app.eyeliner = Image.open('images/eyeliner.png')
     app.eyelinerFace = Image.open('images/eyelinerFace.jpg')
+    #lipstick icon found on https://pngtree.com/freepng/a-lipstick-makeup-illustration_4562723.html
     app.lipstick = Image.open('images/lipstick.png')
     app.lipstickFace = Image.open('images/lipstickFace.jpg')
+    #bg image found on https://www.shutterstock.com/search/pink-purple-glitter
     app.bgImg = Image.open('images/bg.png')
+    #fairy image found on https://www.pngwing.com/en/free-png-svqht
     app.fairyImg = Image.open('images/fairy.png')
 
 def resizeFaceImages(app):
