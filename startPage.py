@@ -1,6 +1,6 @@
-from cmu_graphics import *
-from PIL import Image
-import os, pathlib
+# from cmu_graphics import *
+# from PIL import Image
+# import os, pathlib
 
 def openImage(fileName):
     return Image.open(os.path.join(pathlib.Path(__file__).parent,fileName))
