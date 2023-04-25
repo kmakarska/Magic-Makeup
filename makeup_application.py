@@ -46,21 +46,34 @@ class EyelinerColorButton:
             return True
         
 
+class doneButton:
+    def __init__(self, x, y, w, h):
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
         
+    def draw(self):
+        drawRect(1200, 550, 200, 100, fill='hotPink', border='mediumVioletRed') 
+        drawLabel("Done", 1300, 600, size=50, fill='mediumVioletRed')
+
+    def checkForPress(self, app, mouseX, mouseY):
+        if (mouseX > self.x and mouseX < self.x + self.w and mouseY > self.y and mouseY < self.y + self.h):
+            setActiveScreen('end')       
 
             
-            
+        
 # class Lipstick:
 #     def __init__(self, color):
 #         self.color = color
 #         self.prevMousePositions = []
 #         self.lines = []
 
-def openImage(fileName):
+def game_openImage(fileName):
     #line below taken from lecture notes
     return Image.open(os.path.join(pathlib.Path(__file__).parent,fileName))
 
-def onAppStart(app):
+def game_onAppStart(app):
     init(app) 
     # initLines(app)
     colorInit(app)
@@ -69,8 +82,16 @@ def onAppStart(app):
     # resizeOtherImages(app)
     convertImgType(app)
 
+def end_onAppStart(app):
+    openingImages(app)
+    resizeFaceImages(app)
+    # resizeOtherImages(app)
+    convertImgType(app)
+   
+
 def init(app):
     app.eyeliner = Eyeliner('black', [], [], False, True)
+    app.doneButton = doneButton(1200, 550, 200, 100)
 
     # app.lipstick = Lipstick('pink')
     app.eyelinerPressed = False
@@ -127,16 +148,23 @@ def convertImgType(app):
     # app.lipstickFace = CMUImage(app.lipstickFace)
     app.fairyImg = CMUImage(app.fairyImg)
     
-def redrawAll(app):
+def game_redrawAll(app):
     drawImage(app.bgImg, 0, 0)
     drawImage(app.fairyImg, 70, 100)
     drawImage(app.defaultFace, 400, -5)
     drawRect(0, 680, 2000, 300, fill='violet')
-    drawRect(1200, 550, 200, 100, fill='hotPink', border='mediumVioletRed') 
-    drawLabel("Done", 1300, 600, size=50, fill='mediumVioletRed')
+    app.doneButton.draw()
     eyelinerDrawing(app)
     # lipstickPressed(app)
     drawProducts(app)
+
+def end_redrawAll(app):
+    drawImage(app.bgImg, 0, 0)
+    drawImage(app.fairyImg, 70, 100)
+    drawImage(app.defaultFace, 400, -5)
+    app.eyeliner.drawLines()
+    drawRect(0, 680, 2000, 300, fill='violet')
+
 
 
 def drawProducts(app):
@@ -240,7 +268,7 @@ def eyelinerColors(app):
 #             drawRect(1305, 275, 80, 80, fill=None, border='yellow', borderWidth=5)
     
       
-def onMouseDrag(app, mouseX, mouseY):
+def game_onMouseDrag(app, mouseX, mouseY):
     if not app.eyeliner.dragging:
         app.eyeliner.lines.append(app.eyeliner.prevMousePositions)
         app.eyeliner.prevMousePositions = [(mouseX, mouseY)]
@@ -248,14 +276,15 @@ def onMouseDrag(app, mouseX, mouseY):
     elif app.eyeliner.dragging:
         app.eyeliner.prevMousePositions.append((mouseX, mouseY))
 
-def onMouseRelease(app, mouseX, mouseY):
+def game_onMouseRelease(app, mouseX, mouseY):
     app.eyeliner.dragging = False
     app.eyeliner.mouseReleased = True
     app.eyeliner.lines.append(app.eyeliner.prevMousePositions)
 
-def onMousePress(app, mouseX, mouseY):
+def game_onMousePress(app, mouseX, mouseY):
     # if mode is eyeliner, do this
-        eyelinerOnMousePress(app, mouseX, mouseY)
+    eyelinerOnMousePress(app, mouseX, mouseY)
+    app.doneButton.checkForPress(app, mouseX, mouseY)
     # if app.lipstickPressed:
         # lipstickOnMousePress(app, mouseX, mouseY)
     
@@ -403,6 +432,7 @@ def eyelinerOnMousePress(app, mouseX, mouseY):
 #         app.lipstickColor = 'darkMagenta'
 
 def main():
+    runAppWithScreens(initialScreen='game')
     runApp(width=2000, height=1000)
 
 if __name__ == '__main__':
