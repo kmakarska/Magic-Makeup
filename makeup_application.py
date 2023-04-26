@@ -183,7 +183,6 @@ class Lipstick:
             # self.borderColor = None
             return False
 
-
     def drawLines(self):
         for line in self.lines:
             for i in range(len(line) - 1):
@@ -203,6 +202,51 @@ class Lipstick:
     def pressedInSlider(self, mouseX, mouseY):
         if mouseX > 1200 and mouseX < 1400 and mouseY > 450 and mouseY < 490:
             return True
+        
+class Blush:
+    def __init__(self, color, prevMousePositions, lines, dragging, mouseReleased,
+                  lineWidth, sliderDragged, sliderOffset, blushMode, borderColor):
+        self.color = color
+        self.prevMousePositions = prevMousePositions
+        self.lines = lines
+        self.dragging = dragging
+        self.mouseReleased = mouseReleased
+        self.lineWidth = lineWidth
+        self.sliderDragged = sliderDragged
+        self.sliderOffset = sliderOffset
+        self.blushMode = blushMode
+        self.borderColor = borderColor
+
+    def blushPressed(self, mouseX, mouseY):
+        if (mouseX > 270 and mouseX < 420 and mouseY > 720 and mouseY < 870):
+            self.blushMode = True
+            # self.borderColor = 'black'
+            return True
+        else:
+            # self.borderColor = None
+            return False
+
+
+    def drawLines(self):
+        for line in self.lines:
+            for i in range(len(line) - 1):
+                x0, y0 = line[i]
+                x1, y1 = line[i+1]
+                drawLine(x0, y0, x1, y1, lineWidth=self.lineWidth, fill=self.color, opacity=2)
+        for i in range(len(self.prevMousePositions) - 1):
+            x0, y0 = self.prevMousePositions[i]
+            x1, y1 = self.prevMousePositions[i+1]
+            drawLine(x0, y0, x1, y1, lineWidth=self.lineWidth, fill=self.color, opacity=2)
+    
+    def drawSlider(self):
+        drawRect(1200, 450, 200, 40, fill='pink', border='mediumVioletRed')
+        sliderPos = 1200 + (self.lineWidth - 1) * 20
+        drawRect(sliderPos, 450, 40, 40, fill='hotPink', border='mediumVioletRed')
+
+    def pressedInSlider(self, mouseX, mouseY):
+        if mouseX > 1200 and mouseX < 1400 and mouseY > 450 and mouseY < 490:
+            return True
+    
     
 
 
@@ -229,6 +273,27 @@ class EyelinerColorButton:
             return True
         
 class LipstickColorButton:
+    def __init__(self, x, y, width, height, color, borderColor, borderWidth, label):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.color = color
+        self.isClicked = False
+        self.borderColor = borderColor
+        self.borderWidth = borderWidth
+        self.label = label
+
+    def draw(self):
+        drawRect(self.x, self.y, self.width, self.height, fill=self.color, border=self.borderColor, borderWidth=self.borderWidth)
+        drawLabel(self.label, self.x + self.width/2, self.y + self.height/2, fill='mediumVioletRed', size=30)
+
+    def clickedInside(self, mouseX, mouseY):
+        if mouseX > self.x and mouseX < self.x + self.width and mouseY > self.y and mouseY < self.y + self.height:
+            self.isClicked = True
+            return True
+        
+class BlushColorButton:
     def __init__(self, x, y, width, height, color, borderColor, borderWidth, label):
         self.x = x
         self.y = y
@@ -287,6 +352,7 @@ def end_onAppStart(app):
 def init(app):
     app.eyeliner = Eyeliner('black', [], [], False, True, 1, False, 0, False, None)
     app.lipstick = Lipstick('pink', [], [], False, True, 1, False, 0, False, None)
+    app.blush = Blush('pink', [], [], False, True, 1, False, 0, False, None)
     app.doneButton = doneButton(1225, 550, 200, 100)
 
 def colorInit(app):
@@ -306,6 +372,14 @@ def colorInit(app):
     app.magentaL = LipstickColorButton(1225, 280, 70, 70, 'magenta', None, 0, '')
     app.darkMagentaL = LipstickColorButton(1310, 280, 70, 70, 'darkMagenta', None, 0, '')
     app.eraserL = LipstickColorButton(145, 550, 150, 70, 'hotPink', 'mediumVioletRed', 2, 'Clear')
+    #blush
+    app.hotPinkB = BlushColorButton(1225, 120, 70, 70, 'hotPink', None, 0, '')
+    app.crimsonB = BlushColorButton(1310, 120, 70, 70, 'crimson', None, 0, '')
+    app.deepPinkB = BlushColorButton(1225, 200, 70, 70, 'deepPink', None, 0, '')
+    app.darkRedB = BlushColorButton(1310, 200, 70, 70, 'darkRed', None, 0, '')
+    app.magentaB = BlushColorButton(1225, 280, 70, 70, 'magenta', None, 0, '')
+    app.darkMagentaB = BlushColorButton(1310, 280, 70, 70, 'darkMagenta', None, 0, '')
+    app.eraserB = BlushColorButton(145, 550, 150, 70, 'hotPink', 'mediumVioletRed', 2, 'Clear')
 
 def openingImages(app):
     #default face (and other faces) found on https://barbie-makeup.goldhairgames.com/barbie-makeup/1382-barbie-loves-capybaras
@@ -316,21 +390,29 @@ def openingImages(app):
     #lipstick icon found on https://pngtree.com/freepng/a-lipstick-makeup-illustration_4562723.html
     app.lipstickImg = Image.open('images/lipstick.png')
     app.lipstickFace = Image.open('images/lipstickFace.jpg')
+    #blush icon found on https://favpng.com/png_view/cosmetics-rouge-compact-face-powder-clip-art-png/CiDXsDzS 
+    app.blushImg = Image.open('images/blush.png')
+    app.blushFace = Image.open('images/blushFace.jpg')
     #bg image found on https://www.shutterstock.com/search/pink-purple-glitter
     app.bgImg = Image.open('images/bg.png')
     #fairy image found on https://www.pngwing.com/en/free-png-svqht
     app.fairyImg = Image.open('images/fairy.png')
 
+
 def resizeFaceImages(app):
-    newsize = (700, 700)
-    app.defaultFace = app.defaultFace.resize(newsize)
-    app.eyelinerFace = app.eyelinerFace.resize(newsize)
-    app.lipstickFace = app.lipstickFace.resize(newsize)
+    newsizeE = (700, 700)
+    newsizeL = (700, 695)
+    newsizeB = (700, 685)
+    app.defaultFace = app.defaultFace.resize(newsizeE)
+    app.eyelinerFace = app.eyelinerFace.resize(newsizeE)
+    app.lipstickFace = app.lipstickFace.resize(newsizeL)
+    app.blushFace = app.blushFace.resize(newsizeB)
 
 def resizeOtherImages(app):
-    print('yo')
     newsize2 = (200, 200)
     app.lipstickImg = app.lipstickImg.resize(newsize2)
+    newsize3 = (150, 150)
+    app.blushImg = app.blushImg.resize(newsize3)
 
 def convertImgType(app):
     app.bgImg = CMUImage(app.bgImg)
@@ -339,6 +421,8 @@ def convertImgType(app):
     app.eyelinerFace = CMUImage(app.eyelinerFace)
     app.lipstickImg = CMUImage(app.lipstickImg)
     app.lipstickFace = CMUImage(app.lipstickFace)
+    app.blushImg = CMUImage(app.blushImg)
+    app.blushFace = CMUImage(app.blushFace)
     app.fairyImg = CMUImage(app.fairyImg)
     
 def game_redrawAll(app):
@@ -349,6 +433,7 @@ def game_redrawAll(app):
     app.doneButton.draw()
     eyelinerDrawing(app)
     lipstickDrawing(app)
+    blushDrawing(app)
     savingDrawings(app)
     drawProducts(app)
 
@@ -362,6 +447,7 @@ def end_redrawAll(app):
 def drawProducts(app):
     drawImage(app.eyelinerImg, 650, 700)
     drawImage(app.lipstickImg, 1050, 710)
+    drawImage(app.blushImg, 270, 720)
     
 def eyelinerDrawing(app):
     if app.eyeliner.eyelinerMode:
@@ -373,8 +459,6 @@ def eyelinerDrawing(app):
         drawLabel("Place eyeliner on", 550, 80, size=30, fill='mediumVioletRed')
         drawLabel("the upper lash line to", 550, 120, size=30, fill='mediumVioletRed')
         drawLabel("accentuate the eyes!", 550, 160, size=30, fill='mediumVioletRed')
-        drawImage(app.eyelinerImg, 650, 700)
-        drawRect(650, 700, 230, 200, fill=None, border=app.eyeliner.borderColor)    
         app.eyeliner.drawSlider()
         drawLabel("Brush Size", 1300, 420, size=30, fill='mediumVioletRed')
         drawLabel("small <=======> large", 1300, 505, size=17, fill='mediumVioletRed')
@@ -384,25 +468,37 @@ def lipstickDrawing(app):
     if app.lipstick.lipstickMode:
         drawImage(app.lipstickFace, 400, 0)
         drawRect(0, 680, 2000, 300, fill='violet')
-        drawRect(1025, 700, 230, 200, fill=None, border='black')
         #pixie hints
         drawOval(550, 125, 400, 200, fill='lavenderBlush')
         drawRegularPolygon(360, 150, 25, 3, fill='lavenderBlush')
         drawLabel("Place lipstick on", 550, 80, size=30, fill='mediumVioletRed')
         drawLabel("lips to brighten", 550, 120, size=30, fill='mediumVioletRed')
-        drawLabel("the smile!", 550, 160, size=30, fill='mediumVioletRed')
-        drawImage(app.lipstickImg, 1050, 710)
-        drawRect(650, 700, 230, 200, fill=None, border=app.lipstick.borderColor)
-        
+        drawLabel("the smile!", 550, 160, size=30, fill='mediumVioletRed')    
         app.lipstick.drawSlider()
         drawLabel("Brush Size", 1300, 420, size=30, fill='mediumVioletRed')
         drawLabel("small <=======> large", 1300, 505, size=17, fill='mediumVioletRed')
         lipstickColors(app)
 
+def blushDrawing(app):
+    if app.blush.blushMode:
+        drawImage(app.blushFace, 400, 0)
+        drawRect(0, 680, 2000, 300, fill='violet')
+        #pixie hints
+        drawOval(550, 125, 400, 200, fill='lavenderBlush')
+        drawRegularPolygon(360, 150, 25, 3, fill='lavenderBlush')
+        drawLabel("Place blush on", 550, 80, size=30, fill='mediumVioletRed')
+        drawLabel("apples of the cheeks", 550, 120, size=30, fill='mediumVioletRed')
+        drawLabel("to create glow!", 550, 160, size=30, fill='mediumVioletRed')     
+        app.blush.drawSlider()
+        drawLabel("Brush Size", 1300, 420, size=30, fill='mediumVioletRed')
+        drawLabel("small <=======> large", 1300, 505, size=17, fill='mediumVioletRed')
+        blushColors(app)
+
 def savingDrawings(app):
     app.setMaxShapeCount(5000)
     app.eyeliner.drawLines()
     app.lipstick.drawLines()
+    app.blush.drawLines()
 
 
         
@@ -427,11 +523,23 @@ def lipstickColors(app):
         app.magentaL.draw()
         app.darkMagentaL.draw()
         app.eraserL.draw()
+
+def blushColors(app):
+    if(app.blush.blushMode):
+        drawLabel("Colors", 1300, 80, size=30, fill='mediumVioletRed')
+        app.hotPinkB.draw()
+        app.crimsonB.draw()
+        app.deepPinkB.draw()
+        app.darkRedB.draw()
+        app.magentaB.draw()
+        app.darkMagentaB.draw()
+        app.eraserB.draw()
     
       
 def game_onMouseDrag(app, mouseX, mouseY):
     eyelinerOnMouseDrag(app, mouseX, mouseY)
     lipstickOnMouseDrag(app, mouseX, mouseY)
+    blushOnMouseDrag(app, mouseX, mouseY)
    
 def eyelinerOnMouseDrag(app, mouseX, mouseY):
     if app.eyeliner.eyelinerMode:
@@ -460,10 +568,24 @@ def lipstickOnMouseDrag(app, mouseX, mouseY):
             sliderPos = min(1400, max(1225, mouseX - app.lipstick.sliderOffset))
             app.lipstick.lineWidth = (sliderPos - 1225) // 20 + 1
 
+def blushOnMouseDrag(app, mouseX, mouseY):
+    if app.blush.blushMode:
+        if not app.blush.dragging:
+            app.blush.lines.append(app.blush.prevMousePositions)
+            app.blush.prevMousePositions = [(mouseX, mouseY)]
+            app.blush.dragging = True
+        elif app.blush.dragging:
+            app.blush.prevMousePositions.append((mouseX, mouseY))
+        #creating bounds for slider
+        if app.blush.pressedInSlider(mouseX, mouseY):
+            sliderPos = min(1400, max(1225, mouseX - app.blush.sliderOffset))
+            app.blush.lineWidth = (sliderPos - 1225) // 20 + 1
+
 
 def game_onMouseRelease(app, mouseX, mouseY):
     eyelinerOnMouseRelease(app, mouseX, mouseY)
     lipstickOnMouseRelease(app, mouseX, mouseY)
+    blushOnMouseRelease(app, mouseX, mouseY)
     
 def eyelinerOnMouseRelease(app, mouseX, mouseY):
     app.eyeliner.dragging = False
@@ -477,11 +599,18 @@ def lipstickOnMouseRelease(app, mouseX, mouseY):
     app.lipstick.lines.append(app.lipstick.prevMousePositions)
     app.lipstick.sliderDragged = True
 
+def blushOnMouseRelease(app, mouseX, mouseY):
+    app.blush.dragging = False
+    app.blush.mouseReleased = True
+    app.blush.lines.append(app.blush.prevMousePositions)
+    app.blush.sliderDragged = True
+
 
 
 def game_onMousePress(app, mouseX, mouseY):
     eyelinerOnMousePress(app, mouseX, mouseY)
     lipstickOnMousePress(app, mouseX, mouseY)
+    blushOnMousePress(app, mouseX, mouseY)
     app.doneButton.checkForPress(app, mouseX, mouseY)
 
     
@@ -490,8 +619,7 @@ def eyelinerOnMousePress(app, mouseX, mouseY):
     if app.eyeliner.eyelinerPressed(mouseX, mouseY):
         if app.eyeliner.eyelinerMode:
             app.lipstick.lipstickMode = False
-            app.lipstick.borderColor = None
-            app.eyeliner.borderColor = 'black'
+            app.blush.blushMode = False
     
         #drawing the line
         if not app.eyeliner.mouseReleased:
@@ -531,12 +659,8 @@ def lipstickOnMousePress(app, mouseX, mouseY):
     if app.lipstick.lipstickPressed(mouseX, mouseY):
         if app.lipstick.lipstickMode:
             app.eyeliner.eyelinerMode = False
-            app.eyeliner.borderColor = None
-            app.lipstick.borderColor = 'black'
+            app.blush.blushMode = False
     
-        
-        if app.lipstick.lipstickMode:
-            app.eyeliner.borderColor = None
         #drawing the line
         if not app.lipstick.mouseReleased:
             app.lipstick.dragging = True
@@ -566,8 +690,44 @@ def lipstickOnMousePress(app, mouseX, mouseY):
             app.lipstick.color = None
             app.lipstick.prevMousePositions = []
             app.lipstick.lines = []
-        
+
+def blushOnMousePress(app, mouseX, mouseY):
+    if app.blush.blushPressed(mouseX, mouseY):
+        if app.blush.blushMode:
+            app.lipstick.lipstickMode = False
+            app.eyeliner.eyelinerMode = False
+        #drawing the line
+        if not app.blush.mouseReleased:
+            app.blush.dragging = True
+            app.blush.prevMousePositions = [(mouseX, mouseY)]
+        app.blush.mouseReleased = False
+
+    if app.blush.blushMode:   
+        #hotPinkL pressed
+        if (app.hotPinkB.clickedInside(mouseX, mouseY)):
+            app.blush.color = 'hotPink'
+        #crimsonL pressed
+        elif (app.crimsonB.clickedInside(mouseX, mouseY)):
+            app.blush.color = 'crimson'
+        #deepPinkL Pressed
+        elif (app.deepPinkB.clickedInside(mouseX, mouseY)):
+            app.blush.color = 'deepPink'
+        #darkRedL
+        elif (app.darkRedB.clickedInside(mouseX, mouseY)):
+            app.blush.color = 'darkRed'
+        #magentaL
+        elif (app.magentaB.clickedInside(mouseX, mouseY)):
+            app.blush.color = 'magenta'
+        #darkMagentaL
+        elif (app.darkMagentaB.clickedInside(mouseX, mouseY)):
+            app.blush.color = 'darkMagenta'
+        elif (app.eraserB.clickedInside(mouseX, mouseY)):
+            app.blush.color = None
+            app.blush.prevMousePositions = []
+            app.blush.lines = []
+               
    
+
 # def lipstickOnMousePress(app, mouseX, mouseY):
 #     #lipstick pressed
 #     if (mouseX >= 1050 and mouseX <= 1250 and mouseY >= 700 and mouseY <= 900):
