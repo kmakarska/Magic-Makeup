@@ -118,13 +118,14 @@ def name_onKeyPress(app, key):
 
 
 class Eyeliner:
-    def __init__(self, color, prevMousePositions, lines, dragging, mouseReleased, lineWidth, sliderOffset):
+    def __init__(self, color, prevMousePositions, lines, dragging, mouseReleased, lineWidth, sliderDragged, sliderOffset):
         self.color = color
         self.prevMousePositions = prevMousePositions
         self.lines = lines
         self.dragging = dragging
         self.mouseReleased = mouseReleased
         self.lineWidth = lineWidth
+        self.sliderDragged = sliderDragged
         self.sliderOffset = sliderOffset
 
     def drawLines(self):
@@ -139,9 +140,14 @@ class Eyeliner:
             drawLine(x0, y0, x1, y1, lineWidth=self.lineWidth, fill=self.color)
     
     def drawSlider(self):
-        drawRect(10, 10, 100, 20, fill='pink', border='mediumVioletRed')
-        sliderPos = 10 + (self.lineWidth - 1) * 20
-        drawRect(sliderPos, 10, 20, 20, fill='hotPink', border='mediumVioletRed')
+        drawRect(1200, 450, 200, 40, fill='pink', border='mediumVioletRed')
+        sliderPos = 1200 + (self.lineWidth - 1) * 20
+        drawRect(sliderPos, 450, 40, 40, fill='hotPink', border='mediumVioletRed')
+
+    def pressedInSlider(self, mouseX, mouseY):
+        if mouseX > 1200 and mouseX < 1400 and mouseY > 450 and mouseY < 490:
+            return True
+    
 
 
 
@@ -195,7 +201,6 @@ def game_openImage(fileName):
 
 def game_onAppStart(app):
     init(app) 
-    # initLines(app)
     colorInit(app)
     openingImages(app)
     resizeFaceImages(app)
@@ -210,10 +215,9 @@ def end_onAppStart(app):
    
 
 def init(app):
-    app.eyeliner = Eyeliner('black', [], [], False, True, 1, 0)
+    app.eyeliner = Eyeliner('black', [], [], False, True, 1, False, 0)
     app.doneButton = doneButton(1225, 550, 200, 100)
 
-    # app.lipstick = Lipstick('pink')
     app.eyelinerPressed = False
     app.lipstickPressed = False
 
@@ -304,8 +308,8 @@ def eyelinerDrawing(app):
         drawImage(app.eyelinerImg, 650, 700)
         drawRect(650, 700, 230, 200, fill=None, border='black')
         app.eyeliner.drawLines()
-        drawLabel("Brush Size", 1300, 400, size=30, fill='mediumVioletRed')
         app.eyeliner.drawSlider()
+        drawLabel("Brush Size", 1300, 400, size=30, fill='mediumVioletRed')
         eyelinerColors(app)
     
 # def lipstickPressed(app):
@@ -398,19 +402,22 @@ def game_onMouseDrag(app, mouseX, mouseY):
         app.eyeliner.dragging = True
     elif app.eyeliner.dragging:
         app.eyeliner.prevMousePositions.append((mouseX, mouseY))
-    sliderPos = min(90, max(10, mouseX - app.eyeliner.sliderOffset))
-    app.eyeliner.lineWidth = (sliderPos - 10) // 20 + 1
-
+    #creating bounds for slider
+    if app.eyeliner.pressedInSlider(mouseX, mouseY):
+        sliderPos = min(1400, max(1225, mouseX - app.eyeliner.sliderOffset))
+        app.eyeliner.lineWidth = (sliderPos - 1225) // 20 + 1
 
 def game_onMouseRelease(app, mouseX, mouseY):
     app.eyeliner.dragging = False
     app.eyeliner.mouseReleased = True
     app.eyeliner.lines.append(app.eyeliner.prevMousePositions)
+    app.eyeliner.sliderDragged = True
 
 def game_onMousePress(app, mouseX, mouseY):
     # if mode is eyeliner, do this
     eyelinerOnMousePress(app, mouseX, mouseY)
     app.doneButton.checkForPress(app, mouseX, mouseY)
+
     # if app.lipstickPressed:
         # lipstickOnMousePress(app, mouseX, mouseY)
     
@@ -443,11 +450,7 @@ def eyelinerOnMousePress(app, mouseX, mouseY):
         app.eyeliner.color = None
         app.eyeliner.prevMousePositions = []
         app.eyeliner.lines = []
-    #slider pressed
-    if mouseY >= 10 and mouseY <= 30:
-        sliderPos = 10 + (app.eyeliner.lineWidth - 1) * 20
-        if mouseX >= sliderPos and mouseX <= sliderPos + 20:
-            app.eyeliner.sliderOffset = mouseX - sliderPos
+    
     # if (mouseX > 1225 and mouseX < 1295 and mouseY > 120 and mouseY < 190):
     #     app.blackE = True
     #     app.brownE = False
