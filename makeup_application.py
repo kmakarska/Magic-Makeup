@@ -33,9 +33,8 @@ class goButton:
         if (mouseX > self.x and mouseX < self.x + self.w and mouseY > self.y and mouseY < self.y + self.h):
             setActiveScreen('game')
 
-
-
 def start_openImage(fileName):
+    #line directly below taken from image lecture notes
     return Image.open(os.path.join(pathlib.Path(__file__).parent,fileName))
 
 def start_onAppStart(app):  
@@ -64,10 +63,9 @@ def start_redrawAll(app):
 def start_onMousePress(app, mouseX, mouseY):
     #button pressing
     app.nextButton.checkForPress(app, mouseX, mouseY)
-  
-
 
 def name_openImage(fileName):
+    #line directly below taken from image lecture notes
     return Image.open(os.path.join(pathlib.Path(__file__).parent,fileName))
 
 def name_onAppStart(app):  
@@ -120,45 +118,51 @@ def name_onKeyPress(app, key):
 
 
 class Eyeliner:
-    def __init__(self, color, prevMousePositions, lines, dragging, mouseReleased):
+    def __init__(self, color, prevMousePositions, lines, dragging, mouseReleased, lineWidth, sliderOffset):
         self.color = color
         self.prevMousePositions = prevMousePositions
         self.lines = lines
         self.dragging = dragging
         self.mouseReleased = mouseReleased
+        self.lineWidth = lineWidth
+        self.sliderOffset = sliderOffset
 
     def drawLines(self):
         for line in self.lines:
             for i in range(len(line) - 1):
                 x0, y0 = line[i]
                 x1, y1 = line[i+1]
-                drawLine(x0, y0, x1, y1, lineWidth=3, fill=self.color)
+                drawLine(x0, y0, x1, y1, lineWidth=self.lineWidth, fill=self.color)
         for i in range(len(self.prevMousePositions) - 1):
             x0, y0 = self.prevMousePositions[i]
             x1, y1 = self.prevMousePositions[i+1]
-            drawLine(x0, y0, x1, y1, lineWidth=3, fill=self.color)
+            drawLine(x0, y0, x1, y1, lineWidth=self.lineWidth, fill=self.color)
+    
+    def drawSlider(self):
+        drawRect(10, 10, 100, 20, fill='pink', border='mediumVioletRed')
+        sliderPos = 10 + (self.lineWidth - 1) * 20
+        drawRect(sliderPos, 10, 20, 20, fill='hotPink', border='mediumVioletRed')
+
+
 
 class EyelinerColorButton:
-    def __init__(self, x, y, width, height, color, label):
+    def __init__(self, x, y, width, height, color, borderColor, borderWidth, label):
         self.x = x
         self.y = y
         self.width = width
         self.height = height
         self.color = color
         self.isClicked = False
+        self.borderColor = borderColor
+        self.borderWidth = borderWidth
         self.label = label
 
     def draw(self):
-        if self.isClicked:
-            border = None
-        else:
-            border = None
-        drawRect(self.x, self.y, self.width, self.height, fill=self.color, border=border, borderWidth=5)
-        drawLabel(self.label, self.x + self.width/2, self.y + self.height/2, fill='hotPink', size=30)
+        drawRect(self.x, self.y, self.width, self.height, fill=self.color, border=self.borderColor, borderWidth=self.borderWidth)
+        drawLabel(self.label, self.x + self.width/2, self.y + self.height/2, fill='mediumVioletRed', size=30)
 
     def clickedInside(self, mouseX, mouseY):
         if mouseX > self.x and mouseX < self.x + self.width and mouseY > self.y and mouseY < self.y + self.height:
-            print('inside')
             self.isClicked = True
             return True
         
@@ -171,14 +175,13 @@ class doneButton:
         self.h = h
         
     def draw(self):
-        drawRect(1200, 550, 200, 100, fill='hotPink', border='mediumVioletRed') 
-        drawLabel("Done", 1300, 600, size=50, fill='mediumVioletRed')
+        drawRect(1225, 550, 150, 70, fill='hotPink', border='mediumVioletRed') 
+        drawLabel("Done", 1300, 585, size=30, fill='mediumVioletRed')
 
     def checkForPress(self, app, mouseX, mouseY):
         if (mouseX > self.x and mouseX < self.x + self.w and mouseY > self.y and mouseY < self.y + self.h):
             setActiveScreen('end')       
-
-            
+          
         
 # class Lipstick:
 #     def __init__(self, color):
@@ -207,8 +210,8 @@ def end_onAppStart(app):
    
 
 def init(app):
-    app.eyeliner = Eyeliner('black', [], [], False, True)
-    app.doneButton = doneButton(1200, 550, 200, 100)
+    app.eyeliner = Eyeliner('black', [], [], False, True, 1, 0)
+    app.doneButton = doneButton(1225, 550, 200, 100)
 
     # app.lipstick = Lipstick('pink')
     app.eyelinerPressed = False
@@ -217,13 +220,13 @@ def init(app):
 
 def colorInit(app):
     #eyeliner
-    app.blackE = EyelinerColorButton(1225, 120, 70, 70, 'black', '')
-    app.brownE = EyelinerColorButton(1310, 120, 70, 70, 'saddleBrown', '')
-    app.pinkE = EyelinerColorButton(1225, 200, 70, 70, 'deepPink', '')
-    app.purpleE = EyelinerColorButton(1310, 200, 70, 70, 'darkViolet', '')
-    app.greenE = EyelinerColorButton(1225, 280, 70, 70, 'limeGreen', '')
-    app.blueE = EyelinerColorButton(1310, 280, 70, 70, 'royalBlue', '')
-    app.eraser = EyelinerColorButton(1225, 360, 150, 70, 'pink', 'Clear')
+    app.blackE = EyelinerColorButton(1225, 120, 70, 70, 'black', None, 0, '')
+    app.brownE = EyelinerColorButton(1310, 120, 70, 70, 'saddleBrown', None, 0, '')
+    app.pinkE = EyelinerColorButton(1225, 200, 70, 70, 'deepPink', None, 0, '')
+    app.purpleE = EyelinerColorButton(1310, 200, 70, 70, 'darkViolet', None, 0, '')
+    app.greenE = EyelinerColorButton(1225, 280, 70, 70, 'limeGreen', None, 0, '')
+    app.blueE = EyelinerColorButton(1310, 280, 70, 70, 'royalBlue', None, 0, '')
+    app.eraser = EyelinerColorButton(145, 550, 150, 70, 'hotPink', 'mediumVioletRed', 2, 'Clear')
     #lipstick
     # app.hotPinkL = False
     # app.crimsonL = False
@@ -301,6 +304,8 @@ def eyelinerDrawing(app):
         drawImage(app.eyelinerImg, 650, 700)
         drawRect(650, 700, 230, 200, fill=None, border='black')
         app.eyeliner.drawLines()
+        drawLabel("Brush Size", 1300, 400, size=30, fill='mediumVioletRed')
+        app.eyeliner.drawSlider()
         eyelinerColors(app)
     
 # def lipstickPressed(app):
@@ -313,7 +318,7 @@ def eyelinerDrawing(app):
 #         drawRegularPolygon(360, 150, 25, 3, fill='lavenderBlush')
 #         drawLabel("Place lipstick on", 550, 80, size=30, fill='mediumVioletRed')
 #         drawLabel("lips to brighten", 550, 120, size=30, fill='mediumVioletRed')
-#         drawLabel("the smile!", 550, 160, size=30, fill='mediumVioletRed')
+#         drawLabel("the smile!", 550, 160, size=30, fill='')
 #         drawImage(app.lipstick, 1050, 710)
 
     
@@ -321,7 +326,7 @@ def eyelinerDrawing(app):
         
 def eyelinerColors(app):
     if(app.eyelinerPressed):
-        drawLabel("Colors", 1300, 80, size=30)
+        drawLabel("Colors", 1300, 80, size=30, fill='mediumVioletRed')
         app.blackE.draw()
         app.brownE.draw()
         app.pinkE.draw()
@@ -329,6 +334,7 @@ def eyelinerColors(app):
         app.greenE.draw()
         app.blueE.draw()
         app.eraser.draw()
+
 
 
         #black
@@ -392,6 +398,9 @@ def game_onMouseDrag(app, mouseX, mouseY):
         app.eyeliner.dragging = True
     elif app.eyeliner.dragging:
         app.eyeliner.prevMousePositions.append((mouseX, mouseY))
+    sliderPos = min(90, max(10, mouseX - app.eyeliner.sliderOffset))
+    app.eyeliner.lineWidth = (sliderPos - 10) // 20 + 1
+
 
 def game_onMouseRelease(app, mouseX, mouseY):
     app.eyeliner.dragging = False
@@ -434,6 +443,11 @@ def eyelinerOnMousePress(app, mouseX, mouseY):
         app.eyeliner.color = None
         app.eyeliner.prevMousePositions = []
         app.eyeliner.lines = []
+    #slider pressed
+    if mouseY >= 10 and mouseY <= 30:
+        sliderPos = 10 + (app.eyeliner.lineWidth - 1) * 20
+        if mouseX >= sliderPos and mouseX <= sliderPos + 20:
+            app.eyeliner.sliderOffset = mouseX - sliderPos
     # if (mouseX > 1225 and mouseX < 1295 and mouseY > 120 and mouseY < 190):
     #     app.blackE = True
     #     app.brownE = False
