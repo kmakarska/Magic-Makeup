@@ -343,7 +343,8 @@ class replayButton:
 
     def checkForPress(self, app, mouseX, mouseY):
         if (mouseX > self.x and mouseX < self.x + self.w and mouseY > self.y and mouseY < self.y + self.h):
-            setActiveScreen('start')    
+            setActiveScreen('start')
+            init(app)
           
 
 def game_openImage(fileName):
@@ -370,6 +371,7 @@ def init(app):
     app.blush = Blush('pink', [], [], False, True, 1, False, 0, False, None)
     app.doneButton = doneButton(1225, 550, 200, 100)
     app.replayButton = replayButton(1225, 550, 150, 70)
+    app.input = ''
 
 def colorInit(app):
     #eyeliner
@@ -460,6 +462,10 @@ def end_redrawAll(app):
     savingDrawings(app)
     app.replayButton.draw()
     drawRect(0, 680, 2000, 300, fill='violet')
+    if app.input == '':
+        drawLabel(f'Great Job! Play again!', app.width/2, 780, size=50, fill='mediumVioletRed')
+    else:
+        drawLabel(f'Great Job, {app.input}! Play again!', app.width/2, 780, size=50, fill='mediumVioletRed')
 
 def drawProducts(app):
     drawImage(app.eyelinerImg, 650, 700)
@@ -644,9 +650,6 @@ def eyelinerOnMousePress(app, mouseX, mouseY):
             app.eyeliner.dragging = True
             app.eyeliner.prevMousePositions = [(mouseX, mouseY)]
         app.eyeliner.mouseReleased = False
-    
-        print(f'eyelinerPressed = {app.eyeliner.eyelinerPressed(mouseX, mouseY)}')
-        print(f'lipstickPressed = {app.lipstick.lipstickPressed(mouseX, mouseY)}')
 
     if app.eyeliner.eyelinerMode: 
         #blackE pressed
