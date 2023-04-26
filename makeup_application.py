@@ -328,7 +328,22 @@ class doneButton:
 
     def checkForPress(self, app, mouseX, mouseY):
         if (mouseX > self.x and mouseX < self.x + self.w and mouseY > self.y and mouseY < self.y + self.h):
-            setActiveScreen('end')       
+            setActiveScreen('end')   
+
+class replayButton:
+    def __init__(self, x, y, w, h):
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+        
+    def draw(self):
+        drawRect(1225, 575, 150, 70, fill='hotPink', border='mediumVioletRed') 
+        drawLabel("Replay", 1300, 610, size=30, fill='mediumVioletRed')
+
+    def checkForPress(self, app, mouseX, mouseY):
+        if (mouseX > self.x and mouseX < self.x + self.w and mouseY > self.y and mouseY < self.y + self.h):
+            setActiveScreen('start')    
           
 
 def game_openImage(fileName):
@@ -354,6 +369,7 @@ def init(app):
     app.lipstick = Lipstick('pink', [], [], False, True, 1, False, 0, False, None)
     app.blush = Blush('pink', [], [], False, True, 1, False, 0, False, None)
     app.doneButton = doneButton(1225, 550, 200, 100)
+    app.replayButton = replayButton(1225, 550, 150, 70)
 
 def colorInit(app):
     #eyeliner
@@ -442,6 +458,7 @@ def end_redrawAll(app):
     drawImage(app.fairyImg, 70, 100)
     drawImage(app.defaultFace, 400, -5)
     savingDrawings(app)
+    app.replayButton.draw()
     drawRect(0, 680, 2000, 300, fill='violet')
 
 def drawProducts(app):
@@ -495,7 +512,7 @@ def blushDrawing(app):
         blushColors(app)
 
 def savingDrawings(app):
-    app.setMaxShapeCount(5000)
+    app.setMaxShapeCount(10000)
     app.eyeliner.drawLines()
     app.lipstick.drawLines()
     app.blush.drawLines()
@@ -613,7 +630,8 @@ def game_onMousePress(app, mouseX, mouseY):
     blushOnMousePress(app, mouseX, mouseY)
     app.doneButton.checkForPress(app, mouseX, mouseY)
 
-    
+def end_onMousePress(app, mouseX, mouseY):
+    app.replayButton.checkForPress(app, mouseX, mouseY)
    
 def eyelinerOnMousePress(app, mouseX, mouseY):
     if app.eyeliner.eyelinerPressed(mouseX, mouseY):
@@ -725,68 +743,6 @@ def blushOnMousePress(app, mouseX, mouseY):
             app.blush.color = None
             app.blush.prevMousePositions = []
             app.blush.lines = []
-               
-   
-
-# def lipstickOnMousePress(app, mouseX, mouseY):
-#     #lipstick pressed
-#     if (mouseX >= 1050 and mouseX <= 1250 and mouseY >= 700 and mouseY <= 900):
-#         app.lipstickPressed = True
-#         app.eyelinerPressed = False
-#     #hotPinkL pressed
-#     if (mouseX > 1225 and mouseX < 1295 and mouseY > 120 and mouseY < 190):
-#         app.hotPinkL = True
-#         app.crimsonL = False
-#         app.deepPinkL = False
-#         app.darkRed = False
-#         app.magentaL = False
-#         app.darkMagentaL = False
-#         app.lipstickColor = 'hotPink'
-#     #crimsonL pressed
-#     if (mouseX > 1310 and mouseX < 1380 and mouseY > 120 and mouseY < 190):
-#         app.crimsonL = True
-#         app.hotPinkL = False
-#         app.deepPinkL = False
-#         app.darkRed = False
-#         app.magentaL = False
-#         app.darkMagentaL = False
-#         app.lipstickColor = 'crimson'
-#     #deepPinkL pressed
-#     if (mouseX > 1225 and mouseX < 1295 and mouseY > 200 and mouseY < 270):
-#         app.deepPinkL = True
-#         app.crimsonL = False
-#         app.hotPinkL = False 
-#         app.darkRed = False       
-#         app.magentaL = False
-#         app.darkMagentaL = False
-#         app.lipstickColor = 'deepPink'
-#     #darkRedL pressed
-#     if (mouseX > 1310 and mouseX < 1380 and mouseY > 200 and mouseY < 270):
-#         app.darkRed = True
-#         app.deepPinkL = False
-#         app.crimsonL = False
-#         app.hotPinkL = False  
-#         app.magentaL = False
-#         app.darkMagentaL = False
-#         app.lipstickColor = 'darkRed'
-#     #magentaL pressed
-#     if (mouseX > 1225 and mouseX < 1295 and mouseY > 280 and mouseY < 350):
-#         app.magentaL = True
-#         app.darkRed = False
-#         app.deepPinkL = False
-#         app.crimsonL = False
-#         app.hotPinkL = False  
-#         app.darkMagentaL = False
-#         app.lipstickColor = 'magenta'
-#     #darkMagentaL pressed
-#     if (mouseX > 1310 and mouseX < 1380 and mouseY > 280 and mouseY < 350):
-#         app.darkMagentaL = True
-#         app.magentaL = False
-#         app.darkRed = False
-#         app.deepPinkL = False
-#         app.crimsonL = False
-#         app.hotPinkL = False  
-#         app.lipstickColor = 'darkMagenta'
 
 def main():
     runAppWithScreens(initialScreen='start')
