@@ -119,7 +119,7 @@ def name_onKeyPress(app, key):
 
 class Eyeliner:
     def __init__(self, color, prevMousePositions, lines, dragging, mouseReleased, lineWidth, 
-                 sliderDragged, sliderOffset, eyelinerMode, borderColor):
+                 sliderDragged, eyelinerMode, borderColor):
         self.color = color
         self.prevMousePositions = prevMousePositions
         self.lines = lines
@@ -127,7 +127,6 @@ class Eyeliner:
         self.mouseReleased = mouseReleased
         self.lineWidth = lineWidth
         self.sliderDragged = sliderDragged
-        self.sliderOffset = sliderOffset
         self.eyelinerMode = eyelinerMode
         self.borderColor = borderColor
 
@@ -162,7 +161,7 @@ class Eyeliner:
     
 class Lipstick:
     def __init__(self, color, prevMousePositions, lines, dragging, mouseReleased,
-                  lineWidth, sliderDragged, sliderOffset, lipstickMode, borderColor):
+                  lineWidth, sliderDragged, lipstickMode, borderColor):
         self.color = color
         self.prevMousePositions = prevMousePositions
         self.lines = lines
@@ -170,7 +169,6 @@ class Lipstick:
         self.mouseReleased = mouseReleased
         self.lineWidth = lineWidth
         self.sliderDragged = sliderDragged
-        self.sliderOffset = sliderOffset
         self.lipstickMode = lipstickMode
         self.borderColor = borderColor
 
@@ -205,7 +203,7 @@ class Lipstick:
         
 class Blush:
     def __init__(self, color, prevMousePositions, lines, dragging, mouseReleased,
-                  lineWidth, sliderDragged, sliderOffset, blushMode, borderColor):
+                  lineWidth, sliderDragged, blushMode, borderColor):
         self.color = color
         self.prevMousePositions = prevMousePositions
         self.lines = lines
@@ -213,7 +211,6 @@ class Blush:
         self.mouseReleased = mouseReleased
         self.lineWidth = lineWidth
         self.sliderDragged = sliderDragged
-        self.sliderOffset = sliderOffset
         self.blushMode = blushMode
         self.borderColor = borderColor
 
@@ -366,9 +363,9 @@ def end_onAppStart(app):
    
 
 def init(app):
-    app.eyeliner = Eyeliner('black', [], [], False, True, 1, False, 0, False, None)
-    app.lipstick = Lipstick('pink', [], [], False, True, 1, False, 0, False, None)
-    app.blush = Blush('pink', [], [], False, True, 1, False, 0, False, None)
+    app.eyeliner = Eyeliner('black', [], [], False, True, 1, False, False, None)
+    app.lipstick = Lipstick('pink', [], [], False, True, 1, False, False, None)
+    app.blush = Blush('pink', [], [], False, True, 1, False, False, None)
     app.doneButton = doneButton(1225, 550, 200, 100)
     app.replayButton = replayButton(1225, 550, 150, 70)
     app.input = ''
@@ -471,7 +468,13 @@ def drawProducts(app):
     drawImage(app.eyelinerImg, 650, 700)
     drawImage(app.lipstickImg, 1050, 710)
     drawImage(app.blushImg, 270, 720)
-    
+    if app.eyeliner.eyelinerMode:
+        drawRect(650, 700, 230, 210, fill = None, border = 'black')
+    elif app.lipstick.lipstickMode:
+        drawRect(1030, 700, 230, 210, fill = None, border = 'black')
+    elif app.blush.blushMode:
+        drawRect(230, 700, 230, 210, fill = None, border = 'black')
+
 def eyelinerDrawing(app):
     if app.eyeliner.eyelinerMode:
         drawImage(app.eyelinerFace, 400, 0)
@@ -566,7 +569,7 @@ def game_onMouseDrag(app, mouseX, mouseY):
    
 def eyelinerOnMouseDrag(app, mouseX, mouseY):
     if app.eyeliner.eyelinerMode:
-        if not app.eyeliner.dragging:
+        if not app.eyeliner.dragging and mouseX > 400 and mouseX < 1100 and mouseY > 0 and mouseY < 700:
             app.eyeliner.lines.append(app.eyeliner.prevMousePositions)
             app.eyeliner.prevMousePositions = [(mouseX, mouseY)]
             app.eyeliner.dragging = True
@@ -574,13 +577,13 @@ def eyelinerOnMouseDrag(app, mouseX, mouseY):
             app.eyeliner.prevMousePositions.append((mouseX, mouseY))
         #creating bounds for slider
         if app.eyeliner.pressedInSlider(mouseX, mouseY):
-            sliderPos = min(1400, max(1225, mouseX - app.eyeliner.sliderOffset))
+            sliderPos = min(1400, max(1225, mouseX))
             app.eyeliner.lineWidth = (sliderPos - 1225) // 20 + 1
         
 
 def lipstickOnMouseDrag(app, mouseX, mouseY):
     if app.lipstick.lipstickMode:
-        if not app.lipstick.dragging:
+        if not app.lipstick.dragging and mouseX > 400 and mouseX < 1100 and mouseY > 0 and mouseY < 700:
             app.lipstick.lines.append(app.lipstick.prevMousePositions)
             app.lipstick.prevMousePositions = [(mouseX, mouseY)]
             app.lipstick.dragging = True
@@ -588,12 +591,12 @@ def lipstickOnMouseDrag(app, mouseX, mouseY):
             app.lipstick.prevMousePositions.append((mouseX, mouseY))
         #creating bounds for slider
         if app.lipstick.pressedInSlider(mouseX, mouseY):
-            sliderPos = min(1400, max(1225, mouseX - app.lipstick.sliderOffset))
+            sliderPos = min(1400, max(1225, mouseX))
             app.lipstick.lineWidth = (sliderPos - 1225) // 20 + 1
 
 def blushOnMouseDrag(app, mouseX, mouseY):
     if app.blush.blushMode:
-        if not app.blush.dragging:
+        if not app.blush.dragging and mouseX > 400 and mouseX < 1100 and mouseY > 0 and mouseY < 700:
             app.blush.lines.append(app.blush.prevMousePositions)
             app.blush.prevMousePositions = [(mouseX, mouseY)]
             app.blush.dragging = True
@@ -601,7 +604,7 @@ def blushOnMouseDrag(app, mouseX, mouseY):
             app.blush.prevMousePositions.append((mouseX, mouseY))
         #creating bounds for slider
         if app.blush.pressedInSlider(mouseX, mouseY):
-            sliderPos = min(1400, max(1225, mouseX - app.blush.sliderOffset))
+            sliderPos = min(1400, max(1225, mouseX))
             app.blush.lineWidth = (sliderPos - 1225) // 20 + 1
 
 
