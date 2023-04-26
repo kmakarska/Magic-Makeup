@@ -225,11 +225,11 @@ class Blush:
             for i in range(len(line) - 1):
                 x0, y0 = line[i]
                 x1, y1 = line[i+1]
-                drawLine(x0, y0, x1, y1, lineWidth=self.lineWidth, fill=self.color, opacity=1)
+                drawLine(x0, y0, x1, y1, lineWidth=self.lineWidth, fill=self.color, opacity=2)
         for i in range(len(self.prevMousePositions) - 1):
             x0, y0 = self.prevMousePositions[i]
             x1, y1 = self.prevMousePositions[i+1]
-            drawLine(x0, y0, x1, y1, lineWidth=self.lineWidth, fill=self.color, opacity=1)
+            drawLine(x0, y0, x1, y1, lineWidth=self.lineWidth, fill=self.color, opacity=2)
     
     def drawSlider(self):
         drawRect(1200, 450, 200, 40, fill='pink', border='mediumVioletRed')
