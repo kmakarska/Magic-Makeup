@@ -175,10 +175,8 @@ class Lipstick:
     def lipstickPressed(self, mouseX, mouseY):
         if (mouseX > 1025 and mouseX < 1255 and mouseY > 700 and mouseY < 900):
             self.lipstickMode = True
-            # self.borderColor = 'black'
             return True
         else:
-            # self.borderColor = None
             return False
 
     def drawLines(self):
@@ -217,10 +215,8 @@ class Blush:
     def blushPressed(self, mouseX, mouseY):
         if (mouseX > 270 and mouseX < 420 and mouseY > 720 and mouseY < 870):
             self.blushMode = True
-            # self.borderColor = 'black'
             return True
         else:
-            # self.borderColor = None
             return False
 
 
@@ -229,11 +225,11 @@ class Blush:
             for i in range(len(line) - 1):
                 x0, y0 = line[i]
                 x1, y1 = line[i+1]
-                drawLine(x0, y0, x1, y1, lineWidth=self.lineWidth, fill=self.color, opacity=2)
+                drawLine(x0, y0, x1, y1, lineWidth=self.lineWidth, fill=self.color, opacity=1)
         for i in range(len(self.prevMousePositions) - 1):
             x0, y0 = self.prevMousePositions[i]
             x1, y1 = self.prevMousePositions[i+1]
-            drawLine(x0, y0, x1, y1, lineWidth=self.lineWidth, fill=self.color, opacity=2)
+            drawLine(x0, y0, x1, y1, lineWidth=self.lineWidth, fill=self.color, opacity=1)
     
     def drawSlider(self):
         drawRect(1200, 450, 200, 40, fill='pink', border='mediumVioletRed')
@@ -398,6 +394,7 @@ def colorInit(app):
 
 def openingImages(app):
     #default face (and other faces) found on https://barbie-makeup.goldhairgames.com/barbie-makeup/1382-barbie-loves-capybaras
+    #red outline on each face is hand-drawn by Katie Makarska
     app.defaultFace = Image.open('images/defaultFace.png')
     #eyeliner icon found on https://pngtree.com/free-png-vectors/eyeliner-clipart
     app.eyelinerImg = Image.open('images/eyeliner.png')
@@ -512,7 +509,7 @@ def blushDrawing(app):
         #pixie hints
         drawOval(550, 125, 400, 200, fill='lavenderBlush')
         drawRegularPolygon(360, 150, 25, 3, fill='lavenderBlush')
-        drawLabel("Place blush on", 550, 80, size=30, fill='mediumVioletRed')
+        drawLabel("Place blush on the", 550, 80, size=30, fill='mediumVioletRed')
         drawLabel("apples of the cheeks", 550, 120, size=30, fill='mediumVioletRed')
         drawLabel("to create glow!", 550, 160, size=30, fill='mediumVioletRed')     
         app.blush.drawSlider()
