@@ -15,7 +15,8 @@ class nextButton:
         drawLabel("Next", 900, 500, size=50, fill='mediumVioletRed')
 
     def checkForPress(self, app, mouseX, mouseY):
-        if (mouseX > self.x and mouseX < self.x + self.w and mouseY > self.y and mouseY < self.y + self.h):
+        if (mouseX > self.x and mouseX < self.x + self.w and 
+            mouseY > self.y and mouseY < self.y + self.h):
             setActiveScreen('name')
 
 class goButton:
@@ -30,7 +31,8 @@ class goButton:
         drawLabel("GO", 750, 700, size=50, fill='mediumVioletRed')
 
     def checkForPress(self, app, mouseX, mouseY):
-        if (mouseX > self.x and mouseX < self.x + self.w and mouseY > self.y and mouseY < self.y + self.h):
+        if (mouseX > self.x and mouseX < self.x + self.w and
+            mouseY > self.y and mouseY < self.y + self.h):
             setActiveScreen('game')
 
 def start_openImage(fileName):
@@ -109,7 +111,8 @@ def name_onMousePress(app, mouseX, mouseY):
 
 def name_onKeyPress(app, key):
     if (app.boxPressed):
-        if key.isalpha() and key != 'enter' and key != 'tab' and key != 'escape' and len(app.input) != 15:
+        if (key.isalpha() and key != 'enter' and key != 'tab' and key != 'escape' 
+            and len(app.input) != 15):
             app.input += key
         if key == 'backspace':
             app.input = app.input[:-10]
@@ -118,8 +121,8 @@ def name_onKeyPress(app, key):
 
 
 class Eyeliner:
-    def __init__(self, color, prevMousePositions, lines, dragging, mouseReleased, lineWidth, 
-                 sliderDragged, eyelinerMode, borderColor):
+    def __init__(self, color, prevMousePositions, lines, dragging, mouseReleased, 
+                 lineWidth, sliderDragged, eyelinerMode, borderColor):
         self.color = color
         self.prevMousePositions = prevMousePositions
         self.lines = lines
@@ -257,11 +260,14 @@ class EyelinerColorButton:
         self.label = label
 
     def draw(self):
-        drawRect(self.x, self.y, self.width, self.height, fill=self.color, border=self.borderColor, borderWidth=self.borderWidth)
-        drawLabel(self.label, self.x + self.width/2, self.y + self.height/2, fill='mediumVioletRed', size=30)
+        drawRect(self.x, self.y, self.width, self.height, fill=self.color, 
+                 border=self.borderColor, borderWidth=self.borderWidth)
+        drawLabel(self.label, self.x + self.width/2, self.y + self.height/2,
+                 fill='mediumVioletRed', size=30)
 
     def clickedInside(self, mouseX, mouseY):
-        if mouseX > self.x and mouseX < self.x + self.width and mouseY > self.y and mouseY < self.y + self.height:
+        if (mouseX > self.x and mouseX < self.x + self.width and 
+            mouseY > self.y and mouseY < self.y + self.height):
             self.isClicked = True
             return True
         
@@ -278,8 +284,10 @@ class LipstickColorButton:
         self.label = label
 
     def draw(self):
-        drawRect(self.x, self.y, self.width, self.height, fill=self.color, border=self.borderColor, borderWidth=self.borderWidth)
-        drawLabel(self.label, self.x + self.width/2, self.y + self.height/2, fill='mediumVioletRed', size=30)
+        drawRect(self.x, self.y, self.width, self.height, fill=self.color, 
+                 border=self.borderColor, borderWidth=self.borderWidth)
+        drawLabel(self.label, self.x + self.width/2, self.y + self.height/2, 
+                  fill='mediumVioletRed', size=30)
 
     def clickedInside(self, mouseX, mouseY):
         if mouseX > self.x and mouseX < self.x + self.width and mouseY > self.y and mouseY < self.y + self.height:
@@ -299,11 +307,14 @@ class BlushColorButton:
         self.label = label
 
     def draw(self):
-        drawRect(self.x, self.y, self.width, self.height, fill=self.color, border=self.borderColor, borderWidth=self.borderWidth)
-        drawLabel(self.label, self.x + self.width/2, self.y + self.height/2, fill='mediumVioletRed', size=30)
+        drawRect(self.x, self.y, self.width, self.height, fill=self.color, 
+                 border=self.borderColor, borderWidth=self.borderWidth)
+        drawLabel(self.label, self.x + self.width/2, self.y + self.height/2, 
+                  fill='mediumVioletRed', size=30)
 
     def clickedInside(self, mouseX, mouseY):
-        if mouseX > self.x and mouseX < self.x + self.width and mouseY > self.y and mouseY < self.y + self.height:
+        if (mouseX > self.x and mouseX < self.x + self.width and mouseY > self.y 
+            and mouseY < self.y + self.height):
             self.isClicked = True
             return True
         
@@ -320,7 +331,8 @@ class doneButton:
         drawLabel("Done", 1300, 585, size=30, fill='mediumVioletRed')
 
     def checkForPress(self, app, mouseX, mouseY):
-        if (mouseX > self.x and mouseX < self.x + self.w and mouseY > self.y and mouseY < self.y + self.h):
+        if (mouseX > self.x and mouseX < self.x + self.w and 
+            mouseY > self.y and mouseY < self.y + self.h):
             setActiveScreen('end')   
 
 class replayButton:
@@ -335,10 +347,11 @@ class replayButton:
         drawLabel("Replay", 1300, 610, size=30, fill='mediumVioletRed')
 
     def checkForPress(self, app, mouseX, mouseY):
-        if (mouseX > self.x and mouseX < self.x + self.w and mouseY > self.y and mouseY < self.y + self.h):
+        if (mouseX > self.x and mouseX < self.x + self.w and
+            mouseY > self.y and mouseY < self.y + self.h):
             setActiveScreen('start')
             init(app)
-          
+            app.boxPressed = False        
 
 def game_openImage(fileName):
     #line below taken from lecture notes
@@ -566,42 +579,49 @@ def game_onMouseDrag(app, mouseX, mouseY):
    
 def eyelinerOnMouseDrag(app, mouseX, mouseY):
     if app.eyeliner.eyelinerMode:
-        if not app.eyeliner.dragging and mouseX > 400 and mouseX < 1100 and mouseY > 0 and mouseY < 700:
+        if (not app.eyeliner.dragging and mouseX > 400 and mouseX < 1100 and
+            mouseY > 0 and mouseY < 700):
             app.eyeliner.lines.append(app.eyeliner.prevMousePositions)
             app.eyeliner.prevMousePositions = [(mouseX, mouseY)]
             app.eyeliner.dragging = True
         elif app.eyeliner.dragging:
             app.eyeliner.prevMousePositions.append((mouseX, mouseY))
-        #creating bounds for slider
         if app.eyeliner.pressedInSlider(mouseX, mouseY):
+            #creating bounds for slider
             sliderPos = min(1400, max(1225, mouseX))
+            #changing lineWidth
             app.eyeliner.lineWidth = (sliderPos - 1225) // 20 + 1
         
 
 def lipstickOnMouseDrag(app, mouseX, mouseY):
     if app.lipstick.lipstickMode:
-        if not app.lipstick.dragging and mouseX > 400 and mouseX < 1100 and mouseY > 0 and mouseY < 700:
+        if (not app.lipstick.dragging and mouseX > 400 and mouseX < 1100 and 
+            mouseY > 0 and mouseY < 700):
             app.lipstick.lines.append(app.lipstick.prevMousePositions)
             app.lipstick.prevMousePositions = [(mouseX, mouseY)]
             app.lipstick.dragging = True
         elif app.lipstick.dragging:
             app.lipstick.prevMousePositions.append((mouseX, mouseY))
-        #creating bounds for slider
+        
         if app.lipstick.pressedInSlider(mouseX, mouseY):
+            #creating bounds for slider
             sliderPos = min(1400, max(1225, mouseX))
+            #changing lineWidth
             app.lipstick.lineWidth = (sliderPos - 1225) // 20 + 1
 
 def blushOnMouseDrag(app, mouseX, mouseY):
     if app.blush.blushMode:
-        if not app.blush.dragging and mouseX > 400 and mouseX < 1100 and mouseY > 0 and mouseY < 700:
+        if (not app.blush.dragging and mouseX > 400 and mouseX < 1100 and 
+            mouseY > 0 and mouseY < 700):
             app.blush.lines.append(app.blush.prevMousePositions)
             app.blush.prevMousePositions = [(mouseX, mouseY)]
             app.blush.dragging = True
         elif app.blush.dragging:
             app.blush.prevMousePositions.append((mouseX, mouseY))
-        #creating bounds for slider
         if app.blush.pressedInSlider(mouseX, mouseY):
+            #creating bounds for slider
             sliderPos = min(1400, max(1225, mouseX))
+            #changing lineWidth
             app.blush.lineWidth = (sliderPos - 1225) // 20 + 1
 
 
@@ -627,8 +647,6 @@ def blushOnMouseRelease(app, mouseX, mouseY):
     app.blush.mouseReleased = True
     app.blush.lines.append(app.blush.prevMousePositions)
     app.blush.sliderDragged = True
-
-
 
 def game_onMousePress(app, mouseX, mouseY):
     eyelinerOnMousePress(app, mouseX, mouseY)
@@ -707,6 +725,7 @@ def lipstickOnMousePress(app, mouseX, mouseY):
         #darkMagentaL
         elif (app.darkMagentaL.clickedInside(mouseX, mouseY)):
             app.lipstick.color = 'darkMagenta'
+        #clear lipstick pressed
         elif (app.eraserL.clickedInside(mouseX, mouseY)):
             app.lipstick.color = None
             app.lipstick.prevMousePositions = []
@@ -742,6 +761,7 @@ def blushOnMousePress(app, mouseX, mouseY):
         #darkMagentaL
         elif (app.darkMagentaB.clickedInside(mouseX, mouseY)):
             app.blush.color = 'darkMagenta'
+        #clear blush pressed
         elif (app.eraserB.clickedInside(mouseX, mouseY)):
             app.blush.color = None
             app.blush.prevMousePositions = []
